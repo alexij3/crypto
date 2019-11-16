@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +36,23 @@ public class Controller {
     private Button encryptBtn;
 
     @FXML
+    private MenuItem openTextFileItem;
+
+    @FXML
     private MenuItem openEncFileItem;
+
+    @FXML
+    private Button decryptToFileBtn;
+
+    @FXML
+    void decryptTextToFile(MouseEvent event) {
+        File file = this.fileChooser.showSaveDialog(openEncFileItem.getParentPopup().getScene().getWindow());
+        if (file != null) {
+            Cipher cipher = new CaesarCipher();
+            List<String> decryptedMessages = cipher.decrypt(this.encryptedText.getText(), alphabet);
+            saveTextToFile(decryptedMessages, file);
+        }
+    }
 
     @FXML
     void encryptText(MouseEvent event) {
@@ -41,11 +60,17 @@ public class Controller {
 
         Cipher caesar = new CaesarCipher(-54);
 
-        this.encryptedText.setText(caesar.encrypt(initialText, alphabet));
+        String encryptedText = caesar.encrypt(initialText, alphabet);
+        this.encryptedText.setText(encryptedText);
+
+        File file = this.fileChooser.showSaveDialog(openEncFileItem.getParentPopup().getScene().getWindow());
+        if (file != null) {
+            saveTextToFile(Collections.singletonList(encryptedText), file);
+        }
     }
 
     @FXML
-    void openEncFile(ActionEvent event) {
+    void openTextFile(ActionEvent event) {
         File file = this.fileChooser.showOpenDialog(openEncFileItem.getParentPopup().getScene().getWindow());
         if (file != null) {
             this.initialText.setText(readFile(file));
@@ -53,8 +78,30 @@ public class Controller {
     }
 
     @FXML
+    void openEncFile(ActionEvent event) {
+        File file = this.fileChooser.showOpenDialog(openEncFileItem.getParentPopup().getScene().getWindow());
+        if (file != null) {
+            this.encryptedText.setText(readFile(file));
+        }
+    }
+
+    @FXML
     void initialize() {
         this.fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text", "*.txt"));
+    }
+
+    private void saveTextToFile(List<String> content, File file) {
+        try {
+            PrintWriter writer;
+            writer = new PrintWriter(file);
+            for (String contentString: content) {
+                writer.println(contentString);
+                writer.println();
+            }
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private String readFile(File file){

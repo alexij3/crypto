@@ -18,7 +18,7 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button fx:id="encryptBtn" layoutX="218.0" layoutY="284.0" mnemonicParsing="false" onMouseClicked="#encryptText" prefHeight="25.0" prefWidth="115.0" text="Encrypt">
+      <Button fx:id="encryptBtn" layoutX="218.0" layoutY="284.0" mnemonicParsing="false" onMouseClicked="#encryptText" prefHeight="25.0" prefWidth="115.0" text="Encrypt to file">
          <font>
             <Font size="15.0" />
          </font>
@@ -27,7 +27,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="openEncFileItem" mnemonicParsing="false" onAction="#openEncFile" text="Open encrypted file" />
+              <MenuItem fx:id="openTextFileItem" mnemonicParsing="false" onAction="#openTextFile" text="Open file with text" />
+                  <MenuItem fx:id="openEncFileItem" mnemonicParsing="false" onAction="#openEncFile" text="Open file with encrypted text" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -42,5 +43,10 @@
           </Menu>
         </menus>
       </MenuBar>
+      <Button fx:id="decryptToFileBtn" layoutX="219.0" layoutY="538.0" mnemonicParsing="false" onMouseClicked="#decryptTextToFile" prefHeight="25.0" prefWidth="115.0" text="Decrypt to file">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
    </children>
 </Pane>

@@ -7,6 +7,9 @@ public class CaesarCipher implements Cipher {
 
     private int step;
 
+    public CaesarCipher() {
+    }
+
     public CaesarCipher(int step) {
         this.step = step;
     }
@@ -24,19 +27,7 @@ public class CaesarCipher implements Cipher {
         StringBuilder encryptedText = new StringBuilder();
         initialText.chars()
                 .mapToObj(c -> (char) c)
-                .map(character -> {
-                    int oldPosition = alphabet.indexOf(character);
-                    if (oldPosition >= 0) {
-                        int newPosition = this.step % alphabet.length();
-                        if (newPosition < 0 && oldPosition + newPosition < 0) {
-                            newPosition = alphabet.length() + newPosition + oldPosition;
-                        } else {
-                            newPosition = oldPosition + newPosition;
-                        }
-                        return alphabet.charAt(newPosition);
-                    }
-                    return character;
-                })
+                .map(character -> this.encryptCharacter(character, alphabet, this.step))
                 .forEach(encryptedText::append);
         return encryptedText.toString();
     }
@@ -49,15 +40,29 @@ public class CaesarCipher implements Cipher {
             final int step = i;
             encryptedText.chars()
                     .mapToObj(c -> (char) c)
-                    .map(character -> {
-                        int newPosition = alphabet.indexOf(character) + step;
-                        return alphabet.charAt(newPosition);
-                    })
+                    .map(character -> this.encryptCharacter(character, alphabet, step))
                     .forEach(decryptedString::append);
             decryptedStrings.add(decryptedString.toString());
             decryptedString.setLength(0);
         }
         return decryptedStrings;
+    }
+
+    private char encryptCharacter(char character, String alphabet, int step) {
+        int oldPosition = alphabet.indexOf(character);
+        if (oldPosition >= 0) {
+            int newPosition = step % alphabet.length();
+            if (newPosition < 0 && oldPosition + newPosition < 0) {
+                newPosition = alphabet.length() + newPosition + oldPosition;
+            } else {
+                newPosition = oldPosition + newPosition;
+                if (newPosition >= alphabet.length()) {
+                    newPosition = newPosition - alphabet.length();
+                }
+            }
+            return alphabet.charAt(newPosition);
+        }
+        return character;
     }
 
 }
